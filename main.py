@@ -42,7 +42,6 @@ def home():
 
 @app.route('/add')
 def add_book():
-    # название, автор, категория (выпадающий список).
     name = requests.form.get('name')
     author = requests.form.get('author')
     category = requests.form.get('category')
