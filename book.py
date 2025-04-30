@@ -1,3 +1,7 @@
+import os
+import json
+import logging
+
 class Category:
     def __init__(self, id: int, name: str):
         self.id = id
@@ -5,6 +9,18 @@ class Category:
 
     def to_dict(self):
         return {"name": self.name}
+    
+    def load_categories():
+        if os.path.exists('json/categories.json'):
+            with open('json/categories.json', 'r') as file:
+                logging.info('Loading categories from categories.json')
+                return json.load(file)
+        return []
+
+    def save_categories(categories):
+        with open('json/categories.json', 'w') as file:
+            logging.info('Saving categories to categories.json')
+            json.dump(categories, file)
 
 
 class Book:
@@ -20,3 +36,15 @@ class Book:
             "author": self.author,
             "category_id": self.category_id
         }
+
+    def load_books():
+        if os.path.exists('json/books.json'):
+            with open('json/books.json', 'r') as file:
+                logging.info('Loading books from books.json')
+                return json.load(file)
+        return []
+
+    def save_books(books):
+        with open('json/books.json', 'w') as file:
+            logging.info('Saving books to books.json')
+            json.dump(books, file)
