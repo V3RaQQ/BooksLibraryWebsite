@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Библиотека книг</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6fa;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        input[type="text"], select {
+            padding: 8px;
+            border: 1px solid #bfc9d1;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        button {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #217dbb;
+        }
+        a {
+            display: inline-block;
+            margin: 10px 10px 20px 0;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: #217dbb;
+        }
+        table {
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 900px;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background: #f2f6fa;
+        }
+        tr:hover {
+            background: #eaf3fb;
+            transition: background 0.2s;
+        }
+        .message {
+            width: 90%;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 12px;
+            border-radius: 6px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            font-size: 1.1em;
+            opacity: 1;
+            transition: opacity 1s;
+        }
+        .fade-out {
+            opacity: 0;
+        }
+        .not-found {
+            text-align: center;
+            color: #888;
+            margin: 30px 0;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Библиотека книг</h1>
+    {% if message %}
+        <div class="message" id="msg">{{ message }}</div>
+    {% endif %}
+    <form method="get" action="/">
+        <input type="text" name="q" placeholder="Поиск" value="{{ request.args.get('q', '') }}">
+        <select name="category">
+            <option value="">Все категории</option>
+            {% for cat in categories %}
+                <option value="{{ cat['id'] }}" {% if cat['id']|string == request.args.get('category', '') %}selected{% endif %}>{{ cat['name'] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Поиск</button>
+    </form>
+    <div style="text-align:center;">
+        <a href="/add">Добавить книгу</a>
+        <a href="/add_category">Добавить категорию</a>
+    </div>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Категория</th>
+            <th>Действия</th>
+        </tr>
+        {% for book in books %}
+        <tr>
+            <td>{{ book['name'] }}</td>
+            <td>{{ book['author'] }}</td>
+            <td>
+                {% for cat in categories %}
+                    {% if cat['id'] == book['category'] %}
+                        {{ cat['name'] }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                <a href="/edit/{{ book['id'] }}">Редактировать</a>
+                <a href="/delete/{{ book['id'] }}" onclick="return confirm('Удалить книгу?')">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% if not books %}
+        <div class="not-found">Ничего не найдено!</div>
+    {% endif %}
+    <script>
+        // Плавное исчезновение сообщения
+        window.onload = function() {
+            var msg = document.getElementById('msg');
+            if (msg) {
+                setTimeout(function() {
+                    msg.classList.add('fade-out');
+                }, 2000);
+                setTimeout(function() {
+                    msg.style.display = 'none';
+                }, 3000);
+            }
+        };
+    </script>
+</body>
+</html>
