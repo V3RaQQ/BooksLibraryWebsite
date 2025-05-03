@@ -129,7 +129,7 @@
             <td>{{ book['author'] }}</td>
             <td>
                 {% for cat in categories %}
-                    {% if cat['id'] == book['category'] %}
+                    {% if cat['id'] == book['category_id'] %}
                         {{ cat['name'] }}
                     {% endif %}
                 {% endfor %}

@@ -11,6 +11,7 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
+app.secret_key = 'оченьоченьсекретно'  # для флешей?
 
 @app.route('/')
 def home():
@@ -29,22 +30,36 @@ def home():
         flash('Ничего не найдено!')
     return render_template('index.html', books=filtered_books, categories=categories)
 
-@app.route('/add_book', methods=['GET', 'POST'])
+@app.route('/add', methods=['GET', 'POST'])
 def add_book():
     categories = load_categories()
     if request.method == 'POST':
-        title = request.form.get('title', '').strip()
+        name = request.form.get('name', '').strip()
         author = request.form.get('author', '').strip()
         category_id = request.form.get('category_id')
-        if title and author and category_id:
+        if name and author and category_id:
             books = load_books()
             new_id = max([b['id'] for b in books], default=0) + 1
-            new_book = Book(new_id, title, author, int(category_id)).to_dict()
+            new_book = Book(new_id, name, author, int(category_id)).to_dict()
             books.append(new_book)
             save_books(books)
-            flash(f"Книга '{title}' добавлена!")
+            flash(f"Книга '{name}' добавлена!")
             return redirect(url_for('home'))
-    return render_template('add_form.html', categories=categories)
+    return render_template('add_book.html', categories=categories)
+
+@app.route('/add_category', methods=['GET', 'POST'])
+def add_category():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        if name:
+            categories = load_categories()
+            new_id = max([c['id'] for c in categories], default=0) + 1
+            new_category = Category(new_id, name).to_dict()
+            categories.append(new_category)
+            save_categories(categories)
+            flash(f"Категория '{name}' добавлена!")
+            return redirect(url_for('home'))
+    return render_template('add_category.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

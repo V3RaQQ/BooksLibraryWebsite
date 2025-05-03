@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Добавить книгу</title>
+    <title>Добавить категорию</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -33,7 +33,7 @@
             color: #34495e;
             margin-bottom: 5px;
         }
-        input[type="text"], select {
+        input[type="text"] {
             padding: 10px;
             border: 1px solid #bfc9d1;
             border-radius: 5px;
@@ -41,7 +41,7 @@
             background: #f8fafc;
             transition: border 0.2s;
         }
-        input[type="text"]:focus, select:focus {
+        input[type="text"]:focus {
             border: 1.5px solid #3498db;
             outline: none;
         }
@@ -77,41 +77,23 @@
 </head>
 <body>
     <div class="container">
-        <h2>Добавить книгу</h2>
-        <form method="post" id="addBookForm">
+        <h2>Добавить категорию</h2>
+        <form method="post" id="addCategory">
             <div>
-                <label for="name">Название книги</label>
-                <input type="text" id="name" name="name" placeholder="Введите название">
-            </div>
-            <div>
-                <label for="author">Автор</label>
-                <input type="text" id="author" name="author" placeholder="Введите автора">
-            </div>
-            <div>
-                <label for="category_id">Категория</label>
-                <select id="category_id" name="category_id" required>
-                    <option value="">Выберите категорию</option>
-                    {% for cat in categories %}
-                        <option value="{{ cat['id'] }}">{{ cat['name'] }}</option>
-                    {% endfor %}
-                </select>
+                <label for="name">Название категории</label>
+                <input type="text" id="name" name="name" placeholder="Введите название категории">
             </div>
             <button type="submit" id="submitBtn" disabled>Добавить</button>
         </form>
         <a href="/" class="back-link">&larr; Назад к списку</a>
     </div>
     <script>
-        const form = document.getElementById('addBookForm');
         const nameInput = document.getElementById('name');
-        const author = document.getElementById('author');
-        const category = document.getElementById('category_id');
         const submitBtn = document.getElementById('submitBtn');
         function checkForm() {
-            submitBtn.disabled = !(nameInput.value.trim() && author.value.trim() && category.value);
+            submitBtn.disabled = !nameInput.value.trim();
         }
         nameInput.addEventListener('input', checkForm);
-        author.addEventListener('input', checkForm);
-        category.addEventListener('change', checkForm);
         window.onload = checkForm;
     </script>
 </body>
